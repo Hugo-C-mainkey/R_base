@@ -1,0 +1,276 @@
+### 输入输出（读入输出数据、文件）
+
+向量赋值:
+x <- c(1,2,3) 
+assign("x",c(1,2,3)) 
+c(1,2,3) -> x
+"->" 和 "="在R中有轻微的不同，如果 "=" 错误，尝试使用 "->"
+
+read.table（"infantry.txt", sep="\t"， header=TRUE）
+seq属性用其它字符分割，比如文本文件用空格（tab）分隔。\t Tab; \r 回车; \n 换行; \\ 反斜杠。header设置为文件中已经存在表头名称，默认不用。另外，encoding，指定编码方式。
+
+read.csv("targets.csv")——读入csv（Comma Seperated Values）文件，属性被逗号分割
+read.csv(url("<link>"))——read.csv() 和 url()的合体，读存在网上的数据
+
+x <- scan(file="")——手动输入数据，同时scan可以指定输入变量的数据类型，适合大数据文件或特殊类型文件。
+scan("data.dat", what = list("", 0, 0))——what指定变量类型列表
+
+readLines('http://en.wikipedia.org/wiki/Main_Page',n=10)——读取文本文件，将文档转为以行为单位存放的list格式，比如读取读取wikipedia的主页html文件的前十行
+
+write.table(Data, file="file.txt", row.names = FALSE, quote=FALSE)——输出，quote为FALSE去掉字符串类型的双引号，write.table(stasum, "stasum.csv",row.names = FALSE,col.name=FALSE,sep=",",append=TRUE)
+write.csv（data，file="foo.csv",row.names=FALSE）——写成csv格式,row.names=FALSE去掉行号
+
+print() ——打印
+
+save.image（"./data.RData"）——把原本在计算机内存中（工作空间）活动的数据转存到硬盘中。
+load("./RData")——加载目录中的*.RData，把文档-词项矩阵从磁盘加载到内存中
+
+
+### **数据查看**
+
+-   **通用对象**
+
+R是一种基于对象（Object）的语言，对象具有很多属性（Attribute），其中一种重要的属性就是类（Class），最基本的类包括了数值（numeric）、逻辑（logical）、字符（character）、列表（list），符合类包括矩阵（matrix）、数组（array）、因子（factor）、数据框（dataframe）。
+
+class(<object>)  和 data.class(object)——查看对象object的类或类型
+unclass()——消除对象object的类
+
+-   **基本数据类型**
+mode()——查看基本数据类型
+length()——查看长度
+as.<数据类型>.(x)——改变对象x的数据类型
+x <- as.character(x)
+
+-   **特殊属性**
+attributes(<object>)——查看对象object各种属性组成的列表
+attr(<object>，“name”)——存取对象object的名为name的属性
+
+-   **混合类型**
+逻辑类型+数值类型=数值类型
+逻辑类型+字符类型=字符类型
+数值类型+字符类型=字符类型
+
+ls() **和** objects（）——查看当前工作空间中存在的对象（变量）
+rm(list=ls())——删除工作空间的所有对象
+methods(x)——查看x函数的源码，有些自带函数输入名称x可以直接看到，有一些需要调用methods方法才能查看函数x的源码，出现多重名，输入对应名称即可
+
+str（）——查看数据（框）中的数据总体信息（比如样本个数、变量个数、属性变量名称、类型）
+nrow(dataframe)——查看数据集行数
+NROW（vector）——查看向量的行数，等于length(x)
+head(dataframe)——查看数据集前6行数据
+tail(dataframe)——查看数据集尾6行数据
+
+-   **向量特征**
+
+**逻辑向量运算：**
+TRUE，FALSE——全部大写
+isTRUE(x)——判断x为TRUE
+|，&，！——或且非
+ANY，ALL——任意，全部
+
+**数组和矩阵**
+train$var
+trainnew[trainnew[trainvar == NA] <- 1
+Data[is.na(Data)] <- 0——数据框多维变量中给NA值赋值为0
+apply（A，Margin，FUN，...）——A为矩阵，Margin设定待处理的维数，为1是横排（行），为2是竖排（列）做运算，Fun是运算函数
+sweep（x，2，apply（x，MARGIN=1，mean），FUN）——对数组或者矩阵进行运算。 MARGIN=1表示行，2表示列；STATS统计量，如apply（x，MARGIN=1，mean），FUN函数运算默认为减法，“/”除法
+y.vector<-with(data,get(yval))——表示在data数据框中读取列名称为yval的向量。
+with(<data>, <colname|func>)——提取数据框中的某些参数做运算，对于数据框运算很方便
+	
+
+### **编辑**
+
+optim(c(0,0), <func>)——优化问题函数，c(0,0)是优化函数参数的初始值，返回值par是参数最优点值，value是参数的最优点时平方误差值，counts是返回执行输入函数func的次数以及梯度gradient的次数，convergence值为0表示有把握找到最优点，非0值时对应错误，message是一些其它信息。
+curve（sapply(x,<func>), <from>, <to>）——画曲线图，from和to设置横坐标取值范围
+
+sample(length(x), <size>, replace=F)——采样，生成向量x的随机顺序的大小为<size>的新向量；replace为False为不重复抽样，为True则重复抽样
+
+Round ——取整。精确
+ceiling()——取整，偏向数值小的
+floor() ——取整，偏向数值大的
+%/% ——整除
+
+colnames(Data)[4]="value"——更换某一列名
+edit()——编辑数据表格
+rm(x, y)——移除对象（变量）x和y
+na.exclude(<data>)——移除缺失数据整行
+na.omit(<data>)——删除缺失数据
+attr（na.omit（<data>）,"na.action"）——返回向量a中元素为NA的下标
+na.fail（）——如果向量中至少包括1个NA值，则返回错误；如果不包括任何NA，则返回原有向量
+
+merge(x = targets, y = infanty)——合并数据框，x和y是待合并数据框，相同属性字段也会合并在一起
+merge(x, y, by = intersect(names(x), names(y)),by.x = by, by.y = by, all = FALSE, all.x = all, all.y = all,sort = TRUE, suffixes = c(".x",".y"),incomparables = NULL, ...) 
+merge函数参数的说明:
+
+    x,y:用于合并的两个数据框
+
+    by,by.x,by.y:指定依据哪些行合并数据框,默认值为相同列名的列.
+
+    all,all.x,all.y:指定x和y的行是否应该全在输出文件.
+
+    sort:by指定的列是否要排序.
+
+    suffixes:指定除by外相同列名的后缀.
+
+    incomparables:指定by中哪些单元不进行合并.
+
+scale(x, center = TRUE, scale = TRUE)——中心化与标准化，center是中心化，scale是标准化。（全选：减去均值，再除以标准差）
+cut(x，breaks=c(0,10,30)，labels，ordered_result=F)——连续数据的离散化，将向量依据breaks区间分割为因子向量。labels设置返回因子向量的水平标签值，ordered_result为False生成的因子向量无大小意义，否则有大小意义
+
+-   **apply族函数**
+
+apply(A，MARGIN，FUN，...)——处理对象A是矩阵或数组，MARGIN设定待计算的维数，FUN是某些函数，如mean，sum
+**注：**apply与其它函数不同，它并不能明显改善计算效率，因为它本身内置为循环运算。
+
+按列
+lappy(dataframe，FUN，list(median,sd))——处理对象是向量、列表或其它对象，输出格式为列表list
+sapply(dataframe$Filed，FUN)——与lapply()相似，输出格式为矩阵（或数据框）
+
+按行
+tapply(X, INDEX, FUN, simplify = TRUE) ——处理分组数据, INDEX和X是有同样长度的因子，simplify是逻辑变（量默认为T）
+aggregate(x~y+z, data，FUN)和by()——和tapply功能类似
+
+其余参看：apply函数族
+
+-   **plyr库**
+ddply(Data，.(user_id，item_id)，summarize，liulan=sum(liulan)）——split-apply-combine的一体化函数；.(user_id，item_id)作为每行的一对标识ID（因子），前面的“.”号省略数据框名称；summrize是一个函数fun；liulan是一个变量，最后生成的数据框只有user_id，item_id，liulan三列。详情参见例子  R语言利器之ddply
+transform(x，y)——将x和y的列转换成·一个数据框。
+
+-   reshape库（reshape2）
+melt（data，id.vars）——转换数据溶解。修改数据组织结构，创建一个数据矩阵，以id.var作为每行的编号，剩余列数据取值仅作为1列数值，并用原列名作为新数值的分类标记。
+cast（data, userid~itemid,value="rattings",fill=0）——统计转换数据，生成矩阵，公式~左边的作为行表名，右边的作为列表名。之后可以用cor（）计算每列数据之间的相关系数，并计算距离。
+acast 和 dcast（data, userid~itemid,value.var="rattings"）——同上，reshape2包，acast最后生成数组，dcase生成数据框。参见 R语言进阶之4：数据整形（reshape）
+
+-   **字符串处理**
+nchar()——获取字符串长度，它能够获取字符串的长度，它也支持字符串向量操作。注意它和length()的结果是有区别的？什么区别
+paste("a", "b", sep="")——字符串粘合，负责将若干个字符串相连结，返回成单独的字符串。其优点在于，就算有的处理对象不是字符型也能自动转为字符型。
+strsplit(A，split='[,.]') ——字符串分割，负责将字符串按照某种分割形式将其进行划分，它正是paste()的逆操作。
+substr(data,start,stop)——字符串截取，能对给定的字符串对象取出子集，其参数是子集所处的起始和终止位置。子集为从start到stop的下标区间
+grep()——字符串匹配，负责搜索给定字符串对象中特定表达式 ，并返回其位置索引。grepl()函数与之类似，但其后面的"l"则意味着返回的将是逻辑值
+regexpr（pattern,text）——从字符串text中提取特定的字符串的下标位置
+gregexpr（）——只查询匹配的第一个特定字符串的下标位置
+gsub("a",1,<vector>)——字符串替代，负责搜索字符串的特定表达式，并用新的内容加以替代。
+sub()函数——和gsub是类似的，但只替代第一个发现结果。
+chartr( )——字符串替换函数
+toupper( )、tolower( )及casefold( )——大小写转换函数
+其余参见：R语言中的字符串处理函数
+
+-   **控制流**
+if—else——分支语句
+switch(index,case1,case2,casen)——index指示跳到第i个casei中
+for（i in <vecter>）——循环语句，通过控制变量i
+while——循环语句，通过设定循环范围
+repeat—break——循环语句，无限循环，由break跳出
+
+## **特殊数据对象**
+
+-   **向量特性**
+向量数组初始小标序号从1开始
+向量增加元素可以直接通过“vector[n+1]<-0”方式增加
+a<-c()——向量初始化
+vector <- numeric（<int>）——创建初始向量<int>个数，并赋初值为0
+length（vector）<- leg——修改对象长度为leg
+names(vector) <- c("A","B","C")——给向量起名称
+
+vector["A"]——通过名称访问对应元素
+ a == c(1, 99, 3)——比较**每一个元素对应**是否相等
+c（0，1）——创建向量，向量内元素类型应一致！
+seq（5，9）**和** 5：9 ——连续向量，等差数列
+seq（5，9，0.5）——以0.5为间隔创建
+seq(from,to,length,by)
+	
+### **数据索引**
+
+which（is.na(var) == T）——返回对应数组序号
+which.max() 和 which.min()——返回数值类型中最大和最小元素下标
+subset（<data>,<condition>，<colname>）——索引，<data>是数据，<condition>是索引条件，colnames指定索引列名
+match（x，table，nomatch，incomparables）——匹配函数，返回x对应值在table中是否存在，并从1开始编号。x是查询对象，table是待匹配的向量，nomatch是不匹配项的设置值（默认为NA值），incomparables设置table表中不参加匹配的数值，默认为NULL
+<x> %n% <y>——判断x中是否包含y，返回x对应的逻辑值
+
+### **排序**
+
+sort(x, decreasing = FALSE, na.last = NA, ...)——排序，单变量排序，输出排序结果（不是序号）。na.last为TRUE，缺失值放在数据最后，为False    缺失值放在数据最前面，为NA，缺失数据将被移除
+sort.list()——排序输出序号值
+order()——排序，多个变量数据框排序，返回数据框序号数。order例子【结】
+结合ddply和transform函数，降序输出并，输出编号：ddply(dfx,.(group,sex),.fun=function(x){transform(x[order(x$age,decreasing=TRUE),c(1:3)],ind=1:length(group))})
+rank()——秩排序，有重复数字的时候就用这个，根据数值之间的远近输出序号
+rev()——依据下标从后往前倒排数据
+unique（<dataframe>）——返回无重复样本的数据集
+duplicated（x）——查找重复数据，重复序号返回为TRUE
+
+### **比较大小**
+
+pmin（x1,x2,...）——比较向量中的各元素，并把较小的元素组成新向量
+pmax（x1,x2,...）——
+
+### **向量间的交、并、补集**
+
+union(x, y)——（并集）合并两组数据，x和y是没有重复的同一类数据，比如向量集
+intersect(x, y)——（交集）对两组数据求交集，x和y是没有重复的同一类数据，比如向量集
+setdiff(x, y)——（补集）**x中**与y不同的数据，x和y是没有重复的同一类数据，比如向量集，重复不同不记
+setequal(x, y)——判断x与y相同，返回逻辑变量，True为相同，False不同。x和y是没有重复的同一类数据，比如向量集
+is.element(x, y) **和** %n%——对x中每个元素，判断是否在y中存在，TRUE为x，y重共有的元素，Fasle为y中没有。x和y是没有重复的同一类数据，比如向量集
+Vectorize()——将不能进行向量化预算的函数进行转化
+
+-   **矩阵**
+
+array（data=NA,dim=length(data),dimnames=null）——数组、矩阵初始化,dim是数组各维的长度dimnames是数组维的名字，默认为空，array(1:20, dim=c(4,5))。数组是多维的，dim属性设置维数  
+matrix(0, 3, 4)——0为赋初值，3行，4列，存储方式是**先列后行！**矩阵是二维的，用ncol和nrow设置矩阵的行数和列数。byrow设置存储方式（默认列优先），若为TRUE则以行优先
+dim（<vector>）<- c(2,3)——设置矩阵为2行3列
+dimnames（）=list(c（<row>），c（<col>）)——设置参数行和列的名称，以列表的形式进行输入
+matrix[ ,4]——矩阵第4列
+as.vector(matrix)——将矩阵转换成向量
+a["name1","name2"]——矩阵以行和列的名称来代替行列的下标，name1是行名，name2是列名
+rbind（）——矩阵合并，按行合并，自变量宽度应该相等
+cbind（）——矩阵合并，安列合并，自变量高度应该相等
+t()——矩阵转置
+det()——行列式
+solve（A，b）——求线性方程组Ax=b
+solve（A）——求逆矩阵
+eigen（A） ——求距阵的特征值与特征向量，Ax=(Lambda)x，Avalues是矩阵的特征值构成的向量，Avalues是矩阵的特征值构成的向量，Avectors是A的特征向量构成的矩阵
+*——矩阵中每个元素对应相乘
+%*%——矩阵相乘
+
+-   **因子**
+
+因子和向量的区别：
+向量里面存的元素类型可以是**字符型**，而因子里面存的是**整型数值**对应因子的类别（levels）
+as.integer(<factors>)——因子可以转化为整型
+levels(<factors>)——查看因子类别
+gl（n，k，length）——因子,n为水平数，k为重复的次数，length为结果的长度
+factor(x，levels，labels)——因子
+as.factror()——将向量转化为无序因子，不能比较大小
+as.order()——将向量转化为有序因子
+is.factor()——判断是否为无序因子
+is.order()——判断是否为有序因子
+
+-   **列表和数据框**
+
+list()——列表
+unlist()——列表转化为向量
+data.frame()——数据框
+names(<dataframe>)——显示数据框的列名称
+dataframe[[2]] **和** dataframe[["TheSec.Name"]] **和**  dataframe$TheSec.Name——获取数据框第二列的元素值
+as.matrix(<dataframe>)[，1]——把数据框转化为矩阵后，再去提取列向量
+
+-   **na和NULL的区别**
+is.na()——判断na值存在，na是指该数值缺失但是存在。
+is.null（）——判断数据是否为NULL。NULL是指不存在，可以通过 train$var<-NULL 的方法去掉属性变量var。
+
+-   **处理缺失数据na**
+1、将缺失部分剔除
+2、用最高频率值来填补缺失值
+3、通过变量的相关关系来填补缺失值
+4、通过探索案例之间的相似性来填补缺失值
+
+-   公式  
+
+a:b——a和b的交互效应
+a+b——a和b的相加效应
+a*b——相加和交互效应（等价于a+b+a：b）
+-b —— 去掉b的影响
+1 —— y~1拟合一个没有因子影响的模型（仅仅是截距）      
+-1 —— y~x-1表示通过原点的线性回归（等价于y~x+0或者0+y~x）
+^n —— 包含所有知道n阶的交互作用（a+b+c）^2==a+b+c+a:b+a:c+b:c
+poly(a,n) —— a的n阶多项式
+I(x1+x2) —— 表示模型y=b（x1+x2）+a
